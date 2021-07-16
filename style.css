@@ -22,6 +22,9 @@ body{
 
 .hamb-box{
     background-color: #a08c8c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .kcal-price-box {
@@ -41,8 +44,33 @@ body{
 }
 
 .small {
-    width: 100px;
+    width: 200px;
+}
+
+.big {
+    width: 250px;
+}
+
+.visible {
     height: 50px;
     border: 1px solid wheat;
     background-color: darkgreen;
+}
+
+.onButton {
+    background-color: darkgreen;
+}
+
+.offButton {
+    background-color: steelblue;
+}
+
+.check-text {
+    color: #a08c8c;
+    font: 20px Tahoma;
+    font-weight: bolder;
+}
+
+.hamb-box__hamb {
+    border: 1px solid #22000d;
 }
