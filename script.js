@@ -91,7 +91,6 @@ class Hamburger {
         for (let i = 0; i < allAdd.length; i++){
             arr.push(allAdd[i].classList[0]);
         }
-        console.log(arr);
         if (document.querySelector('#hamburger').classList[1] === this.bigSize){
             mult = 1.5;
         } else if (document.querySelector('#hamburger').classList[1] === this.smallSize){
@@ -100,7 +99,6 @@ class Hamburger {
         arr.forEach(pr => {
             priceAll += this.stufferKcal.find(prc => prc.style === pr).kcal * mult;
         })
-        console.log(priceAll);
         document.querySelector('#kcal-box').innerText = `${priceAll} Ккал.`;
     }
     getPrice(stuffer){
@@ -112,7 +110,6 @@ class Hamburger {
         for (let i = 0; i < allAdd.length; i++){
             arr.push(allAdd[i].classList[0]);
         }
-        console.log(arr);
         if (document.querySelector('#hamburger').classList[1] === this.bigSize){
             mult = 1.5;
         } else if (document.querySelector('#hamburger').classList[1] === this.smallSize){
@@ -121,7 +118,6 @@ class Hamburger {
         arr.forEach(pr => {
             priceAll += this.stuffer.find(prc => prc.style === pr).price * mult;
         })
-        console.log(priceAll);
         document.querySelector('#price-box').innerText = `${priceAll} руб.`;
     }
     checkingStuffing (e, off = this.off, on = this.on) {
@@ -129,10 +125,12 @@ class Hamburger {
                 e.target.classList.remove(off);
                 e.target.classList.add(on);
                 document.querySelector(`.${e.target.id}`).classList.add('visible');
+                document.querySelector(`.${e.target.id}`).style.display = "";
             } else {
                 e.target.classList.remove(on);
                 e.target.classList.add(off);
                 document.querySelector(`.${e.target.id}`).classList.remove('visible');
+                document.querySelector(`.${e.target.id}`).style.display = "none";
             }
         this.getPrice(this.stuffing);
         this.getKcal(this.stuffing);
@@ -142,7 +140,6 @@ class Hamburger {
         let buttCreate = '';
         let topCreate = '';
         const topingItem = new SuperBurger();
-        console.log(this.stuffing);
 
         //создает кнопки и пустые части бургеров
         this.stuffing.forEach(toping => {
@@ -163,18 +160,16 @@ class Hamburger {
     }
     start () {
         document.querySelector('#small').checked = true;
-        document.querySelector('.bunBottom').classList.add('visible');
-        document.querySelector('.patty').classList.add('visible');
-        document.querySelector('.cheese').classList.add('visible');
-        document.querySelector('.bunTop').classList.add('visible');
-        document.querySelector('#bunBottom').classList.remove(this.off);
-        document.querySelector('#patty').classList.remove(this.off);
-        document.querySelector('#cheese').classList.remove(this.off);
-        document.querySelector('#bunTop').classList.remove(this.off);
-        document.querySelector('#bunBottom').classList.add(this.on);
-        document.querySelector('#patty').classList.add(this.on);
-        document.querySelector('#cheese').classList.add(this.on);
-        document.querySelector('#bunTop').classList.add(this.on);
+        const arrStartTopings = ['bunBottom', 'patty', 'cheese', 'bunTop'];
+        const invisToppings = ['mayo', 'cucumber', 'onion', 'tomato', 'salad', 'ketchup']
+        arrStartTopings.forEach(startClass => {
+            document.querySelector(`.${startClass}`).classList.add('visible');
+            document.querySelector(`#${startClass}`).classList.remove(this.off);
+            document.querySelector(`#${startClass}`).classList.add(this.on);
+        })
+        invisToppings.forEach(toping => {
+            document.querySelector(`.${toping}`).style.display = "none";
+        })
         this.getKcal(this.stuffing);
         this.getPrice(this.stuffing);
     }
@@ -205,7 +200,6 @@ class SuperBurger extends Hamburger {
         this.span.innerHTML = this.size;
         this.span.classList = 'check-text';
         document.querySelector('.button__size-box').append(this.span);
-        console.log(this.stuffSizer);
     }
     changeSize (e, big = this.bigSize, small = this.smallSize) {
         if (e.target.id === big) {
