@@ -81,30 +81,48 @@ class Hamburger {
         this.off = 'offButton';
         this.bigSize = 'big';
         this.smallSize = 'small';
-        this.multiplayer = 1;
     }
-    getKcal(){
-
-    }
-    getPrice(){
+    getKcal(stufferKcal){
         let priceAll = 0;
         let arr = [];
         let mult = 1;
+        this.stufferKcal = stufferKcal;
         const allAdd = document.querySelectorAll('.visible');
-        console.log(allAdd);
         for (let i = 0; i < allAdd.length; i++){
             arr.push(allAdd[i].classList[0]);
         }
+        console.log(arr);
         if (document.querySelector('#hamburger').classList[1] === this.bigSize){
             mult = 1.5;
-        } else {
+        } else if (document.querySelector('#hamburger').classList[1] === this.smallSize){
             mult = 1;
         }
         arr.forEach(pr => {
-            priceAll += this.stuffing.find(prc => prc.style === pr).price * mult;
+            priceAll += this.stufferKcal.find(prc => prc.style === pr).kcal * mult;
         })
         console.log(priceAll);
-
+        document.querySelector('#kcal-box').innerText = `${priceAll} Ккал.`;
+    }
+    getPrice(stuffer){
+        let priceAll = 0;
+        let arr = [];
+        let mult = 1;
+        this.stuffer = stuffer;
+        const allAdd = document.querySelectorAll('.visible');
+        for (let i = 0; i < allAdd.length; i++){
+            arr.push(allAdd[i].classList[0]);
+        }
+        console.log(arr);
+        if (document.querySelector('#hamburger').classList[1] === this.bigSize){
+            mult = 1.5;
+        } else if (document.querySelector('#hamburger').classList[1] === this.smallSize){
+            mult = 1;
+        }
+        arr.forEach(pr => {
+            priceAll += this.stuffer.find(prc => prc.style === pr).price * mult;
+        })
+        console.log(priceAll);
+        document.querySelector('#price-box').innerText = `${priceAll} руб.`;
     }
     checkingStuffing (e, off = this.off, on = this.on) {
         if (e.target.classList.contains(off)) {
@@ -116,23 +134,15 @@ class Hamburger {
                 e.target.classList.add(off);
                 document.querySelector(`.${e.target.id}`).classList.remove('visible');
             }
-    }
-    changeSize (e, big = this.bigSize, small = this.smallSize) {
-        if (e.target.id === big) {
-            document.querySelector('#hamburger').classList.remove(small);
-            document.querySelector('#hamburger').classList.add(big);
-            this.multiplayer = 1.5;
-        } else if (e.target.id === small) {
-            document.querySelector('#hamburger').classList.remove(big);
-            document.querySelector('#hamburger').classList.add(small);
-            this.multiplayer = 1;
-        }
+        this.getPrice(this.stuffing);
+        this.getKcal(this.stuffing);
     }
     addButtons () {
         //создающие переменные
         let buttCreate = '';
         let topCreate = '';
         const topingItem = new SuperBurger();
+        console.log(this.stuffing);
 
         //создает кнопки и пустые части бургеров
         this.stuffing.forEach(toping => {
@@ -148,11 +158,25 @@ class Hamburger {
         })
 
         //создание кнопок переключения размера бургера
-        topingItem.createSizeButtons(buttCreate, topCreate, this.smallSize, this.changeSize);
-        topingItem.createSizeButtons(buttCreate, topCreate, this.bigSize, this.changeSize);
+        topingItem.createSizeButtons(buttCreate, topCreate, this.smallSize, this.stuffing);
+        topingItem.createSizeButtons(buttCreate, topCreate, this.bigSize, this.stuffing);
     }
     start () {
         document.querySelector('#small').checked = true;
+        document.querySelector('.bunBottom').classList.add('visible');
+        document.querySelector('.patty').classList.add('visible');
+        document.querySelector('.cheese').classList.add('visible');
+        document.querySelector('.bunTop').classList.add('visible');
+        document.querySelector('#bunBottom').classList.remove(this.off);
+        document.querySelector('#patty').classList.remove(this.off);
+        document.querySelector('#cheese').classList.remove(this.off);
+        document.querySelector('#bunTop').classList.remove(this.off);
+        document.querySelector('#bunBottom').classList.add(this.on);
+        document.querySelector('#patty').classList.add(this.on);
+        document.querySelector('#cheese').classList.add(this.on);
+        document.querySelector('#bunTop').classList.add(this.on);
+        this.getKcal(this.stuffing);
+        this.getPrice(this.stuffing);
     }
 }
 
@@ -161,11 +185,11 @@ class SuperBurger extends Hamburger {
     constructor(size, stuffing) {
         super()
     }
-    createSizeButtons(button, span, size, sizeFunc){
+    createSizeButtons(button, span, size, stuffSizer){
         this.button = button;
         this.size = size;
-        this.sizeFunc = sizeFunc;
         this.span = span;
+        this.stuffSizer = stuffSizer;
 
         this.button = document.createElement('input');
         this.button.type = 'radio';
@@ -174,13 +198,25 @@ class SuperBurger extends Hamburger {
         this.button.checked = false;
         this.button.classList = 'size-change';
         this.button.id = this.size;
-        this.button.addEventListener('click', (e) => this.sizeFunc(e));
+        this.button.addEventListener('click', (e) => this.changeSize(e));
         document.querySelector('.button__size-box').append(this.button);
 
         this.span = document.createElement('span');
         this.span.innerHTML = this.size;
         this.span.classList = 'check-text';
         document.querySelector('.button__size-box').append(this.span);
+        console.log(this.stuffSizer);
+    }
+    changeSize (e, big = this.bigSize, small = this.smallSize) {
+        if (e.target.id === big) {
+            document.querySelector('#hamburger').classList.remove(small);
+            document.querySelector('#hamburger').classList.add(big);
+        } else if (e.target.id === small) {
+            document.querySelector('#hamburger').classList.remove(big);
+            document.querySelector('#hamburger').classList.add(small);
+        }
+        this.getPrice(this.stuffSizer);
+        this.getKcal(this.stuffSizer);
     }
 }
 
@@ -197,10 +233,10 @@ class Toping {
         return `<button class="${this.off} add-toping" id="${this.style}">${this.title}</button>`
     }
     render(){
-        return `<div class="${this.style}">${this.title}</div>`
+        return `<div class="${this.style}"></div>`
     }
 }
-
 const hamb = new Hamburger(0, stuff);
 hamb.addButtons();
 hamb.start();
+
